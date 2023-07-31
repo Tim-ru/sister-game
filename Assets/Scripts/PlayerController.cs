@@ -13,17 +13,20 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem dirtParticle;
     public AudioClip jumpSound;
     public AudioClip crashSound;
-    public float jumpForce = 10;
+    public float jumpForce = 600;
     public float gravityModifier;
     public bool isOnGround = true;
     public bool isGameOver;
+    private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
+        Debug.Log(Physics.gravity);
         playerAnim = GetComponent<Animator>();
-        playerAudio = GetComponent<AudioSource>(); 
+        playerAudio = GetComponent<AudioSource>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -37,10 +40,17 @@ public class PlayerController : MonoBehaviour
             playerAnim.SetTrigger("Jump_trig");
             playerAudio.PlayOneShot(jumpSound, 0.8f);
         }
+
+        if(isGameOver)
+        {
+            gameManager.GameOver();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
